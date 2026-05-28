@@ -159,7 +159,7 @@ const experience = [
   },
 ];
 
-const navItems = ["About", "Education", "Skills", "Projects", "Experience", "Contact"];
+const navItems = ["About", "Education", "Skills", "Projects", "Experience"];
 const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
 const WEB3FORMS_ACCESS_KEY = "e8b31f8f-371a-431b-a04e-96f396a3062f";
 
