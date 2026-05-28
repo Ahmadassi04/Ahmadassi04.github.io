@@ -261,7 +261,7 @@ export default function Portfolio() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 overflow-hidden">
+    <main className="min-h-screen bg-slate-950 text-slate-100">
       <div className="fixed inset-0 -z-10">
         <div className="absolute left-[-10%] top-[-10%] h-72 w-72 rounded-full bg-cyan-500/20 blur-3xl" />
         <div className="absolute right-[-10%] top-[20%] h-96 w-96 rounded-full bg-blue-600/20 blur-3xl" />
@@ -287,7 +287,7 @@ export default function Portfolio() {
           </div>
 
           <a
-            href="mailto:ahmad.assi7333@gmail.com"
+            href="#contact"
             className="rounded-full border border-cyan-400/40 px-4 py-2 text-sm font-medium text-cyan-200 transition hover:border-cyan-300 hover:bg-cyan-400/10"
           >
             Contact Me
