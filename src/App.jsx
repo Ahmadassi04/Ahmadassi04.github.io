@@ -1,19 +1,23 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
   BriefcaseBusiness,
   Code2,
-  Cpu,
   Download,
   ExternalLink,
   GitBranch,
   GraduationCap,
   Mail,
   MapPin,
+  Moon,
   Send,
   Sparkles,
+  Sun,
 } from "lucide-react";
+import AnimatedBackground from "./components/AnimatedBackground";
+import BackToTopButton from "./components/BackToTopButton";
+import SkillOrbit from "./components/SkillOrbit";
 
 const skillCategories = [
   {
@@ -163,8 +167,25 @@ const navItems = ["About", "Education", "Skills", "Projects", "Experience"];
 const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
 const WEB3FORMS_ACCESS_KEY = "e8b31f8f-371a-431b-a04e-96f396a3062f";
 
+const getInitialTheme = () => {
+  if (typeof window === "undefined") {
+    return "dark";
+  }
+
+  const savedTheme = window.localStorage.getItem("portfolio-theme");
+
+  if (savedTheme === "light" || savedTheme === "dark") {
+    return savedTheme;
+  }
+
+  return window.matchMedia("(prefers-color-scheme: light)").matches
+    ? "light"
+    : "dark";
+};
+
 export default function Portfolio() {
   const [selectedImage, setSelectedImage] = useState(null);
+  const [theme, setTheme] = useState(getInitialTheme);
   const [contactForm, setContactForm] = useState({
     name: "",
     email: "",
@@ -175,6 +196,31 @@ export default function Portfolio() {
     type: "",
     message: "",
   });
+
+  const isLightTheme = theme === "light";
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    document.documentElement.style.colorScheme = theme;
+  }, [theme]);
+
+  useEffect(() => {
+    if (!selectedImage) {
+      return undefined;
+    }
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setSelectedImage(null);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [selectedImage]);
 
   useEffect(() => {
     const scriptId = "web3forms-script";
@@ -260,15 +306,23 @@ export default function Portfolio() {
     }
   };
 
-  return (
-    <main className="min-h-screen bg-slate-950 text-slate-100">
-      <div className="fixed inset-0 -z-10">
-        <div className="absolute left-[-10%] top-[-10%] h-72 w-72 rounded-full bg-cyan-500/20 blur-3xl" />
-        <div className="absolute right-[-10%] top-[20%] h-96 w-96 rounded-full bg-blue-600/20 blur-3xl" />
-        <div className="absolute bottom-[-10%] left-[30%] h-80 w-80 rounded-full bg-indigo-500/20 blur-3xl" />
-      </div>
+  const handleThemeToggle = () => {
+    setTheme((currentTheme) => {
+      const nextTheme = currentTheme === "dark" ? "light" : "dark";
+      window.localStorage.setItem("portfolio-theme", nextTheme);
+      return nextTheme;
+    });
+  };
 
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-slate-950/75 backdrop-blur-xl">
+  return (
+    <main
+      className={`relative isolate min-h-screen overflow-x-hidden bg-slate-950 pt-20 text-slate-100 ${
+        isLightTheme ? "theme-light" : "theme-dark"
+      }`}
+    >
+      <AnimatedBackground />
+
+      <header className="fixed left-0 right-0 top-0 z-[100] border-b border-white/10 bg-slate-950/75 backdrop-blur-xl">
         <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <a href="#home" className="text-lg font-bold tracking-tight">
             Ahmad<span className="text-cyan-400">.</span>
@@ -286,12 +340,28 @@ export default function Portfolio() {
             ))}
           </div>
 
-          <a
-            href="#contact"
-            className="rounded-full border border-cyan-400/40 px-4 py-2 text-sm font-medium text-cyan-200 transition hover:border-cyan-300 hover:bg-cyan-400/10"
-          >
-            Contact Me
-          </a>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={handleThemeToggle}
+              aria-label={isLightTheme ? "Switch to dark mode" : "Switch to light mode"}
+              title={isLightTheme ? "Switch to dark mode" : "Switch to light mode"}
+              className="theme-toggle inline-flex h-10 w-10 items-center justify-center rounded-full border border-cyan-400/35 bg-white/[0.04] text-cyan-200 transition hover:border-cyan-300 hover:bg-cyan-400/10 focus:outline-none focus:ring-2 focus:ring-cyan-300 focus:ring-offset-2 focus:ring-offset-slate-950"
+            >
+              {isLightTheme ? (
+                <Moon size={18} aria-hidden="true" />
+              ) : (
+                <Sun size={18} aria-hidden="true" />
+              )}
+            </button>
+
+            <a
+              href="#contact"
+              className="rounded-full border border-cyan-400/40 px-4 py-2 text-sm font-medium text-cyan-200 transition hover:border-cyan-300 hover:bg-cyan-400/10"
+            >
+              Contact Me
+            </a>
+          </div>
         </nav>
       </header>
 
@@ -389,10 +459,10 @@ export default function Portfolio() {
             </p>
 
             <div className="mt-6 flex flex-wrap gap-4 text-sm text-slate-300">
-              <span className="inline-flex items-center gap-2 rounded-full bg-white/5 px-4 py-2">
+              <span className="info-pill inline-flex items-center gap-2 rounded-full bg-white/5 px-4 py-2">
                 <MapPin size={16} /> Budapest, Hungary
               </span>
-              <span className="inline-flex items-center gap-2 rounded-full bg-white/5 px-4 py-2">
+              <span className="info-pill inline-flex items-center gap-2 rounded-full bg-white/5 px-4 py-2">
                 <GraduationCap size={16} /> BME Computer Science Engineering
               </span>
             </div>
@@ -435,13 +505,13 @@ export default function Portfolio() {
             </p>
 
             <div className="mt-6 flex flex-wrap justify-center gap-3">
-              <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-300">
+              <span className="info-pill rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-300">
                 Started Sep 2023
               </span>
-              <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-300">
+              <span className="info-pill rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-300">
                 Expected Jan 2027
               </span>
-              <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-300">
+              <span className="info-pill rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-300">
                 Budapest, Hungary
               </span>
             </div>
@@ -467,52 +537,7 @@ export default function Portfolio() {
           </p>
         </div>
 
-        <div className="grid items-start gap-6 md:grid-cols-2">
-          {skillCategories.map((category) => (
-            <div
-              key={category.title}
-              className="rounded-3xl border border-white/10 bg-white/[0.04] p-7 shadow-xl transition hover:border-cyan-400/30 hover:bg-white/[0.06]"
-            >
-              <div className="mb-6 flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-cyan-400/10 text-cyan-300">
-                  <Cpu size={22} />
-                </div>
-                <h3 className="text-xl font-bold text-white">
-                  {category.title}
-                </h3>
-              </div>
-
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {category.skills.map((skill) => (
-                  <div
-                    key={skill.name}
-                    className="flex items-center gap-3 rounded-2xl border border-white/10 bg-slate-950/50 p-3 transition hover:border-cyan-400/40 hover:bg-cyan-400/10"
-                  >
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/90 p-2">
-                      {skill.icon ? (
-                        <img
-                          src={skill.icon}
-                          alt={`${skill.name} logo`}
-                          className="h-full w-full object-contain"
-                          onError={(event) => {
-                            event.currentTarget.style.display = "none";
-                          }}
-                        />
-                      ) : (
-                        <span className="text-xs font-black text-slate-950">
-                          {skill.short}
-                        </span>
-                      )}
-                    </div>
-                    <span className="text-sm font-semibold text-slate-100">
-                      {skill.name}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+        <SkillOrbit skillCategories={skillCategories} />
       </section>
 
       <section id="projects" className="mx-auto max-w-6xl px-6 py-20">
@@ -623,27 +648,31 @@ export default function Portfolio() {
           </h2>
         </div>
 
-        <div className="space-y-5">
+        <div className="experience-timeline">
           {experience.map((item) => (
             <div
               key={`${item.role}-${item.org}`}
-              className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 transition hover:border-cyan-400/30"
+              className="experience-timeline__item"
             >
-              <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                <div>
-                  <div className="flex items-center gap-3">
-                    <BriefcaseBusiness className="text-cyan-300" size={22} />
-                    <h3 className="text-xl font-bold">{item.role}</h3>
+              <span className="experience-timeline__marker" aria-hidden="true" />
+
+              <div className="experience-timeline__card rounded-3xl border border-white/10 bg-white/[0.04] p-6 transition hover:border-cyan-400/30">
+                <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                  <div>
+                    <div className="flex items-center gap-3">
+                      <BriefcaseBusiness className="text-cyan-300" size={22} />
+                      <h3 className="text-xl font-bold">{item.role}</h3>
+                    </div>
+                    <p className="mt-2 text-cyan-100/80">{item.org}</p>
                   </div>
-                  <p className="mt-2 text-cyan-100/80">{item.org}</p>
+
+                  <span className="info-pill rounded-full bg-white/5 px-4 py-2 text-sm text-slate-300">
+                    {item.date}
+                  </span>
                 </div>
 
-                <span className="rounded-full bg-white/5 px-4 py-2 text-sm text-slate-300">
-                  {item.date}
-                </span>
+                <p className="mt-4 leading-7 text-slate-400">{item.details}</p>
               </div>
-
-              <p className="mt-4 leading-7 text-slate-400">{item.details}</p>
             </div>
           ))}
         </div>
@@ -778,7 +807,7 @@ export default function Portfolio() {
                   <div
                     className="h-captcha"
                     data-captcha="true"
-                    data-theme="dark"
+                    data-theme={theme}
                   ></div>
                 </div>
 
@@ -811,6 +840,9 @@ export default function Portfolio() {
       {selectedImage && (
         <div
           className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-md"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="project-screenshot-title"
           onClick={() => setSelectedImage(null)}
         >
           <div
@@ -819,7 +851,9 @@ export default function Portfolio() {
           >
             <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
               <div>
-                <h3 className="font-bold text-white">{selectedImage.title}</h3>
+                <h3 id="project-screenshot-title" className="font-bold text-white">
+                  {selectedImage.title}
+                </h3>
                 <p className="text-sm text-slate-400">Project screenshot</p>
               </div>
               <button
@@ -843,6 +877,7 @@ export default function Portfolio() {
       <footer className="border-t border-white/10 px-6 py-8 text-center text-sm text-slate-500">
         © {new Date().getFullYear()} Ahmad Assi. All rights reserved.
       </footer>
+      <BackToTopButton />
     </main>
   );
 }
