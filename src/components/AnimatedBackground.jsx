@@ -2,27 +2,26 @@ import { useEffect, useRef } from "react";
 
 export default function AnimatedBackground() {
   const backgroundRef = useRef(null);
-  const pointerPosition = useRef({ x: "50vw", y: "50vh" });
+  const glowRef = useRef(null);
+  const pointerPosition = useRef({ x: 0, y: 0 });
   const frameId = useRef(null);
 
   useEffect(() => {
     const background = backgroundRef.current;
-    const root = document.documentElement;
+    const glow = glowRef.current;
 
-    if (!background || typeof window === "undefined") {
+    if (!background || !glow || typeof window === "undefined") {
       return undefined;
     }
 
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    pointerPosition.current = {
+      x: window.innerWidth / 2,
+      y: window.innerHeight / 2,
+    };
 
-    if (prefersReducedMotion) {
-      return undefined;
-    }
-
-    const updateCursorVariables = () => {
+    const updateCursorGlow = () => {
       frameId.current = null;
-      root.style.setProperty("--cursor-x", pointerPosition.current.x);
-      root.style.setProperty("--cursor-y", pointerPosition.current.y);
+      glow.style.transform = `translate3d(${pointerPosition.current.x}px, ${pointerPosition.current.y}px, 0) translate(-50%, -50%)`;
     };
 
     const scheduleUpdate = () => {
@@ -30,7 +29,7 @@ export default function AnimatedBackground() {
         return;
       }
 
-      frameId.current = window.requestAnimationFrame(updateCursorVariables);
+      frameId.current = window.requestAnimationFrame(updateCursorGlow);
     };
 
     const handlePointerMove = (event) => {
@@ -56,7 +55,10 @@ export default function AnimatedBackground() {
     };
 
     const handlePointerLeave = () => {
-      pointerPosition.current = { x: "50vw", y: "50vh" };
+      pointerPosition.current = {
+        x: window.innerWidth / 2,
+        y: window.innerHeight / 2,
+      };
       scheduleUpdate();
     };
 
@@ -86,7 +88,7 @@ export default function AnimatedBackground() {
       aria-hidden="true"
     >
       <div className="animated-background__wash" />
-      <div className="animated-background__cursor-glow" />
+      <div ref={glowRef} className="animated-background__cursor-glow" />
       <div className="animated-background__grid" />
       <div className="animated-background__particles animated-background__particles--near" />
       <div className="animated-background__particles animated-background__particles--far" />

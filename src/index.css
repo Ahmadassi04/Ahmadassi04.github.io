@@ -37,23 +37,23 @@ section[id] {
 
 .animated-background__cursor-glow {
   inset: auto;
-  left: var(--cursor-x, 50vw);
-  top: var(--cursor-y, 50vh);
+  left: 0;
+  top: 0;
   width: min(38rem, 82vw);
   aspect-ratio: 1;
   border-radius: 999px;
   background:
     radial-gradient(
       circle,
-      rgba(34, 211, 238, 0.2),
-      rgba(37, 99, 235, 0.11) 34%,
+      rgba(34, 211, 238, 0.28),
+      rgba(37, 99, 235, 0.15) 34%,
       transparent 68%
     );
   filter: blur(16px);
-  opacity: 0.74;
+  opacity: 0.82;
   transition: opacity 220ms ease;
-  transform: translate(-50%, -50%);
-  will-change: left, top;
+  transform: translate3d(50vw, 50vh, 0) translate(-50%, -50%);
+  will-change: transform;
 }
 
 .animated-background__grid {
@@ -212,7 +212,7 @@ section[id] {
   }
 
   .animated-background__cursor-glow {
-    opacity: 0.3;
+    opacity: 0.62;
     will-change: auto;
   }
 
@@ -226,10 +226,10 @@ section[id] {
     width: min(30rem, 84vw);
     background:
       radial-gradient(
-        circle,
-        rgba(34, 211, 238, 0.12),
-        transparent 68%
-      );
+      circle,
+      rgba(34, 211, 238, 0.14),
+      transparent 68%
+    );
     filter: blur(18px);
     opacity: 0.22;
     will-change: auto;
@@ -1147,11 +1147,11 @@ section[id] {
   background:
     radial-gradient(
       circle,
-      rgba(14, 116, 144, 0.14),
-      rgba(37, 99, 235, 0.07) 34%,
+      rgba(14, 116, 144, 0.18),
+      rgba(37, 99, 235, 0.09) 34%,
       transparent 70%
     );
-  opacity: 0.48;
+  opacity: 0.56;
 }
 
 .theme-light .animated-background__grid {
