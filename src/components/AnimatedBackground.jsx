@@ -46,12 +46,22 @@ export default function AnimatedBackground() {
       scheduleUpdate();
     };
 
+    const handleMouseMove = (event) => {
+      pointerPosition.current = {
+        x: `${event.clientX}px`,
+        y: `${event.clientY}px`,
+      };
+
+      scheduleUpdate();
+    };
+
     const handlePointerLeave = () => {
       pointerPosition.current = { x: "50vw", y: "50vh" };
       scheduleUpdate();
     };
 
     window.addEventListener("pointermove", handlePointerMove, { passive: true });
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
     window.addEventListener("blur", handlePointerLeave);
     document.documentElement.addEventListener("mouseleave", handlePointerLeave);
 
@@ -59,6 +69,7 @@ export default function AnimatedBackground() {
 
     return () => {
       window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("blur", handlePointerLeave);
       document.documentElement.removeEventListener("mouseleave", handlePointerLeave);
 

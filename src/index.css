@@ -223,8 +223,6 @@ section[id] {
 
 @media (pointer: coarse) and (hover: none) {
   .animated-background__cursor-glow {
-    left: 50%;
-    top: 18%;
     width: min(30rem, 84vw);
     background:
       radial-gradient(
