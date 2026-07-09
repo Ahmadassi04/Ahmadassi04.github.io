@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import {
   ArrowRight,
   BriefcaseBusiness,
@@ -164,6 +164,15 @@ const experience = [
 ];
 
 const navItems = ["About", "Education", "Skills", "Projects", "Experience"];
+const sectionIds = ["home", "about", "education", "skills", "projects", "experience", "contact"];
+const heroHeadingPrefix = "Hi, I’m ";
+const heroHeadingFirstName = "Ahmad";
+const heroHeadingLastName = "Assi";
+const heroHeadingSuffix = ".";
+const heroHeadingFirstLine = `${heroHeadingPrefix}${heroHeadingFirstName}`;
+const heroHeadingText = `${heroHeadingFirstLine} ${heroHeadingLastName}${heroHeadingSuffix}`;
+const projectCardPointerFrames = new WeakMap();
+const projectCardPointerPositions = new WeakMap();
 const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
 const WEB3FORMS_ACCESS_KEY = "e8b31f8f-371a-431b-a04e-96f396a3062f";
 
@@ -183,9 +192,156 @@ const getInitialTheme = () => {
     : "dark";
 };
 
+function SectionReveal({ id, className, children, amount = 0.15 }) {
+  const shouldReduceMotion = useReducedMotion();
+
+  return (
+    <motion.section
+      id={id}
+      className={className}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 24 }}
+      whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+      viewport={{ once: true, amount }}
+      transition={{ duration: 0.55, ease: "easeOut" }}
+    >
+      {children}
+    </motion.section>
+  );
+}
+
+function TypewriterHeroHeading({ className }) {
+  const shouldReduceMotion = useReducedMotion();
+  const [typedCharacters, setTypedCharacters] = useState(0);
+
+  useEffect(() => {
+    if (shouldReduceMotion) {
+      return undefined;
+    }
+
+    let currentCharacter = 0;
+    let timeoutId;
+
+    const typeNextCharacter = () => {
+      currentCharacter += 1;
+      setTypedCharacters(currentCharacter);
+
+      if (currentCharacter < heroHeadingText.length) {
+        timeoutId = window.setTimeout(typeNextCharacter, 42);
+      }
+    };
+
+    timeoutId = window.setTimeout(typeNextCharacter, 240);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [shouldReduceMotion]);
+
+  const visibleCharacters = shouldReduceMotion ? heroHeadingText.length : typedCharacters;
+  const visiblePrefix = heroHeadingPrefix.slice(
+    0,
+    Math.min(visibleCharacters, heroHeadingPrefix.length),
+  );
+  const visibleFirstName = heroHeadingFirstName.slice(
+    0,
+    Math.max(0, visibleCharacters - heroHeadingPrefix.length),
+  );
+  const visibleSecondLineCharacters = Math.max(
+    0,
+    visibleCharacters - heroHeadingFirstLine.length - 1,
+  );
+  const visibleLastName = heroHeadingLastName.slice(0, visibleSecondLineCharacters);
+  const visibleSuffix = heroHeadingSuffix.slice(
+    0,
+    Math.max(0, visibleSecondLineCharacters - heroHeadingLastName.length),
+  );
+  const isComplete = visibleCharacters >= heroHeadingText.length;
+  const isTypingFirstLine = !shouldReduceMotion && visibleCharacters <= heroHeadingFirstLine.length;
+  const isTypingSecondLine = !shouldReduceMotion && visibleCharacters > heroHeadingFirstLine.length && !isComplete;
+
+  return (
+    <h1 className={`${className} relative`} aria-label={heroHeadingText}>
+      <span className="invisible" aria-hidden="true">
+        <span className="block">
+          {heroHeadingPrefix}
+          <span className="bg-gradient-to-r from-cyan-300 to-blue-500 bg-clip-text text-transparent">
+            {heroHeadingFirstName}
+          </span>
+        </span>
+        <span className="block">
+          <span className="bg-gradient-to-r from-cyan-300 to-blue-500 bg-clip-text text-transparent">
+            {heroHeadingLastName}
+          </span>
+          {heroHeadingSuffix}
+        </span>
+      </span>
+
+      <span className="absolute inset-0" aria-hidden="true">
+        <span className="block">
+          {visiblePrefix}
+          <span className="bg-gradient-to-r from-cyan-300 to-blue-500 bg-clip-text text-transparent">
+            {visibleFirstName}
+          </span>
+          {isTypingFirstLine && <span className="typewriter-cursor" />}
+        </span>
+        <span className="block">
+          <span className="bg-gradient-to-r from-cyan-300 to-blue-500 bg-clip-text text-transparent">
+            {visibleLastName}
+          </span>
+          {visibleSuffix}
+          {isTypingSecondLine && <span className="typewriter-cursor" />}
+        </span>
+      </span>
+    </h1>
+  );
+}
+
+const updateProjectCardSpotlight = (card) => {
+  const pointerPosition = projectCardPointerPositions.get(card);
+
+  if (!pointerPosition) {
+    projectCardPointerFrames.delete(card);
+    return;
+  }
+
+  card.style.setProperty("--project-card-x", `${pointerPosition.x}%`);
+  card.style.setProperty("--project-card-y", `${pointerPosition.y}%`);
+  projectCardPointerFrames.delete(card);
+};
+
+const handleProjectCardPointerMove = (event) => {
+  if (event.pointerType === "touch") {
+    return;
+  }
+
+  const card = event.currentTarget;
+  const cardRect = card.getBoundingClientRect();
+
+  projectCardPointerPositions.set(card, {
+    x: ((event.clientX - cardRect.left) / cardRect.width) * 100,
+    y: ((event.clientY - cardRect.top) / cardRect.height) * 100,
+  });
+
+  if (!projectCardPointerFrames.has(card)) {
+    const frameId = window.requestAnimationFrame(() => updateProjectCardSpotlight(card));
+    projectCardPointerFrames.set(card, frameId);
+  }
+};
+
+const handleProjectCardPointerLeave = (event) => {
+  const card = event.currentTarget;
+  projectCardPointerPositions.set(card, { x: 50, y: 18 });
+
+  if (!projectCardPointerFrames.has(card)) {
+    const frameId = window.requestAnimationFrame(() => updateProjectCardSpotlight(card));
+    projectCardPointerFrames.set(card, frameId);
+  }
+};
+
 export default function Portfolio() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [theme, setTheme] = useState(getInitialTheme);
+  const [activeSection, setActiveSection] = useState("home");
   const [contactForm, setContactForm] = useState({
     name: "",
     email: "",
@@ -221,6 +377,60 @@ export default function Portfolio() {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [selectedImage]);
+
+  useEffect(() => {
+    const sections = sectionIds
+      .map((sectionId) => document.getElementById(sectionId))
+      .filter(Boolean);
+
+    if (!sections.length) {
+      return undefined;
+    }
+
+    let frameId = null;
+
+    const getActiveSection = () => {
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+      const activationOffset = Math.min(240, Math.max(160, viewportHeight * 0.32));
+
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) {
+        return sections[sections.length - 1].id;
+      }
+
+      return sections.reduce((currentSection, section) => {
+        const sectionTop = section.getBoundingClientRect().top;
+
+        return sectionTop <= activationOffset ? section.id : currentSection;
+      }, sections[0].id);
+    };
+
+    const updateActiveSection = () => {
+      frameId = null;
+      setActiveSection(getActiveSection());
+    };
+
+    const scheduleUpdate = () => {
+      if (frameId !== null) {
+        return;
+      }
+
+      frameId = requestAnimationFrame(updateActiveSection);
+    };
+
+    updateActiveSection();
+
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate);
+
+    return () => {
+      window.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
+
+      if (frameId !== null) {
+        cancelAnimationFrame(frameId);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const scriptId = "web3forms-script";
@@ -316,7 +526,7 @@ export default function Portfolio() {
 
   return (
     <main
-      className={`relative isolate min-h-screen overflow-x-hidden bg-slate-950 pt-20 text-slate-100 ${
+      className={`relative isolate min-h-screen overflow-x-hidden bg-transparent pt-20 text-slate-100 ${
         isLightTheme ? "theme-light" : "theme-dark"
       }`}
     >
@@ -329,15 +539,32 @@ export default function Portfolio() {
           </a>
 
           <div className="hidden items-center gap-6 md:flex">
-            {navItems.map((item) => (
-              <a
-                key={item}
-                href={`#${item.toLowerCase()}`}
-                className="text-sm text-slate-300 transition hover:text-cyan-300"
-              >
-                {item}
-              </a>
-            ))}
+            {navItems.map((item) => {
+              const sectionId = item.toLowerCase();
+              const isActive = activeSection === sectionId;
+
+              return (
+                <a
+                  key={item}
+                  href={`#${sectionId}`}
+                  onClick={() => setActiveSection(sectionId)}
+                  aria-current={isActive ? "page" : undefined}
+                  className={`relative rounded-full px-3 py-2 text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-cyan-300 focus:ring-offset-2 focus:ring-offset-slate-950 ${
+                    isActive
+                      ? "bg-cyan-400/10 text-cyan-200 shadow-sm shadow-cyan-950/20"
+                      : "text-slate-300 hover:bg-white/5 hover:text-cyan-300"
+                  }`}
+                >
+                  {item}
+                  <span
+                    className={`absolute inset-x-3 -bottom-1 h-px rounded-full bg-cyan-300 transition ${
+                      isActive ? "opacity-100" : "opacity-0"
+                    }`}
+                    aria-hidden="true"
+                  />
+                </a>
+              );
+            })}
           </div>
 
           <div className="flex items-center gap-3">
@@ -357,7 +584,13 @@ export default function Portfolio() {
 
             <a
               href="#contact"
-              className="rounded-full border border-cyan-400/40 px-4 py-2 text-sm font-medium text-cyan-200 transition hover:border-cyan-300 hover:bg-cyan-400/10"
+              onClick={() => setActiveSection("contact")}
+              aria-current={activeSection === "contact" ? "page" : undefined}
+              className={`rounded-full border px-4 py-2 text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-cyan-300 focus:ring-offset-2 focus:ring-offset-slate-950 ${
+                activeSection === "contact"
+                  ? "border-cyan-300 bg-cyan-400/15 text-cyan-100"
+                  : "border-cyan-400/40 text-cyan-200 hover:border-cyan-300 hover:bg-cyan-400/10"
+              }`}
             >
               Contact Me
             </a>
@@ -379,13 +612,7 @@ export default function Portfolio() {
             Computer Science Engineering Student
           </div>
 
-          <h1 className="max-w-3xl text-5xl font-black leading-tight tracking-tight md:text-7xl">
-            Hi, I’m{" "}
-            <span className="bg-gradient-to-r from-cyan-300 to-blue-500 bg-clip-text text-transparent">
-              Ahmad Assi
-            </span>
-            .
-          </h1>
+          <TypewriterHeroHeading className="max-w-3xl text-5xl font-black leading-tight tracking-tight md:text-7xl" />
 
           <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">
             I’m an aspiring software developer based in Budapest, building a
@@ -437,7 +664,7 @@ export default function Portfolio() {
         </motion.div>
       </section>
 
-      <section id="about" className="mx-auto max-w-6xl px-6 py-20">
+      <SectionReveal id="about" className="mx-auto max-w-6xl px-6 py-20">
         <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
           <div>
             <p className="mb-3 text-sm font-semibold uppercase tracking-[0.3em] text-cyan-300">
@@ -468,9 +695,9 @@ export default function Portfolio() {
             </div>
           </div>
         </div>
-      </section>
+      </SectionReveal>
       
-      <section id="education" className="mx-auto max-w-6xl px-6 py-20">
+      <SectionReveal id="education" className="mx-auto max-w-6xl px-6 py-20">
         <div className="mb-12 text-center">
           <p className="mb-3 text-sm font-semibold uppercase tracking-[0.3em] text-cyan-300">
             Education
@@ -523,9 +750,9 @@ export default function Portfolio() {
             </p>
           </div>
         </div>
-      </section>
+      </SectionReveal>
 
-      <section id="skills" className="mx-auto max-w-6xl px-6 py-20">
+      <SectionReveal id="skills" className="mx-auto max-w-6xl px-6 py-20">
         <div className="mb-12 text-center">
           <p className="mb-3 text-sm font-semibold uppercase tracking-[0.3em] text-cyan-300">
             Skills
@@ -538,9 +765,9 @@ export default function Portfolio() {
         </div>
 
         <SkillOrbit skillCategories={skillCategories} />
-      </section>
+      </SectionReveal>
 
-      <section id="projects" className="mx-auto max-w-6xl px-6 py-20">
+      <SectionReveal id="projects" className="mx-auto max-w-6xl px-6 py-20" amount={0.08}>
         <div className="mb-10">
           <p className="mb-3 text-sm font-semibold uppercase tracking-[0.3em] text-cyan-300">
             Projects
@@ -558,7 +785,9 @@ export default function Portfolio() {
           {projects.map((project) => (
             <article
               key={project.title}
-              className="group rounded-3xl border border-white/10 bg-white/[0.04] p-7 shadow-xl transition hover:-translate-y-1 hover:border-cyan-400/40 hover:bg-white/[0.06]"
+              onPointerMove={handleProjectCardPointerMove}
+              onPointerLeave={handleProjectCardPointerLeave}
+              className="project-card group rounded-3xl border border-white/10 bg-white/[0.04] p-7 shadow-xl transition hover:-translate-y-1 hover:border-cyan-400/40 hover:bg-white/[0.06]"
             >
 
               {project.image && (
@@ -636,9 +865,9 @@ export default function Portfolio() {
             </article>
           ))}
         </div>
-      </section>
+      </SectionReveal>
 
-      <section id="experience" className="mx-auto max-w-6xl px-6 py-20">
+      <SectionReveal id="experience" className="mx-auto max-w-6xl px-6 py-20">
         <div className="mb-10">
           <p className="mb-3 text-sm font-semibold uppercase tracking-[0.3em] text-cyan-300">
             Experience
@@ -676,9 +905,9 @@ export default function Portfolio() {
             </div>
           ))}
         </div>
-      </section>
+      </SectionReveal>
 
-      <section id="contact" className="mx-auto max-w-6xl px-6 py-20">
+      <SectionReveal id="contact" className="mx-auto max-w-6xl px-6 py-20">
         <div className="rounded-[2rem] border border-cyan-400/20 bg-gradient-to-br from-cyan-400/10 via-blue-500/10 to-white/[0.04] p-8 md:p-12">
           <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
             <div>
@@ -835,7 +1064,7 @@ export default function Portfolio() {
             </form>
           </div>
         </div>
-      </section>
+      </SectionReveal>
 
       {selectedImage && (
         <div

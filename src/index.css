@@ -10,6 +10,8 @@ section[id] {
 }
 
 .animated-background {
+  --cursor-x: 50%;
+  --cursor-y: 50%;
   pointer-events: none;
   background:
     radial-gradient(ellipse at 50% 0%, rgba(14, 165, 233, 0.16), transparent 52%),
@@ -17,6 +19,7 @@ section[id] {
 }
 
 .animated-background__wash,
+.animated-background__cursor-glow,
 .animated-background__grid,
 .animated-background__particles,
 .animated-background__signal {
@@ -32,6 +35,21 @@ section[id] {
   filter: blur(0.5px);
   opacity: 0.62;
   animation: background-wash 38s ease-in-out infinite alternate;
+}
+
+.animated-background__cursor-glow {
+  background:
+    radial-gradient(
+      circle at var(--cursor-x) var(--cursor-y),
+      rgba(34, 211, 238, 0.24),
+      rgba(37, 99, 235, 0.14) 18%,
+      rgba(14, 165, 233, 0.06) 32%,
+      transparent 56%
+    );
+  filter: blur(10px);
+  opacity: 0.84;
+  transition: opacity 220ms ease;
+  will-change: background;
 }
 
 .animated-background__grid {
@@ -153,16 +171,63 @@ section[id] {
   }
 }
 
+.typewriter-cursor {
+  display: inline-block;
+  width: 0.08em;
+  height: 0.82em;
+  margin-left: 0.08em;
+  border-radius: 999px;
+  background-color: #67e8f9;
+  vertical-align: -0.04em;
+  animation: typewriter-cursor-blink 0.85s steps(2, start) infinite;
+}
+
+@keyframes typewriter-cursor-blink {
+  0%,
+  45% {
+    opacity: 1;
+  }
+
+  46%,
+  100% {
+    opacity: 0.18;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
 
   .animated-background__wash,
+  .animated-background__cursor-glow,
   .animated-background__grid,
   .animated-background__particles,
   .animated-background__signal {
     animation: none;
+  }
+
+  .animated-background__cursor-glow {
+    opacity: 0.3;
+    will-change: auto;
+  }
+
+  .typewriter-cursor {
+    animation: none;
+  }
+}
+
+@media (pointer: coarse) and (hover: none) {
+  .animated-background__cursor-glow {
+    opacity: 0.24;
+    background:
+      radial-gradient(
+        circle at 50% 18%,
+        rgba(34, 211, 238, 0.12),
+        transparent 44%
+      );
+    filter: blur(22px);
+    will-change: auto;
   }
 }
 
@@ -175,6 +240,53 @@ section[id] {
   .animated-background__particles--far {
     background-size: 240px 330px, 300px 390px, 220px 310px;
     opacity: 0.38;
+  }
+}
+
+.project-card {
+  --project-card-x: 50%;
+  --project-card-y: 18%;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.project-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(
+      circle at var(--project-card-x) var(--project-card-y),
+      rgba(34, 211, 238, 0.18),
+      rgba(37, 99, 235, 0.08) 28%,
+      transparent 58%
+    );
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease;
+}
+
+.project-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.project-card:hover::before {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-card::before {
+    transition: none;
+  }
+}
+
+@media (pointer: coarse) and (hover: none) {
+  .project-card::before {
+    display: none;
   }
 }
 
@@ -1012,7 +1124,7 @@ section[id] {
 }
 
 .theme-light {
-  background-color: #eff8fc !important;
+  background-color: transparent !important;
   color: #0f172a !important;
 }
 
@@ -1024,6 +1136,18 @@ section[id] {
 
 .theme-light .animated-background__wash {
   opacity: 0.5;
+}
+
+.theme-light .animated-background__cursor-glow {
+  background:
+    radial-gradient(
+      circle at var(--cursor-x) var(--cursor-y),
+      rgba(14, 116, 144, 0.16),
+      rgba(37, 99, 235, 0.08) 18%,
+      rgba(6, 182, 212, 0.05) 34%,
+      transparent 58%
+    );
+  opacity: 0.62;
 }
 
 .theme-light .animated-background__grid {
@@ -1284,6 +1408,16 @@ section[id] {
   opacity: 0.46;
 }
 
+.theme-light .project-card::before {
+  background:
+    radial-gradient(
+      circle at var(--project-card-x) var(--project-card-y),
+      rgba(8, 145, 178, 0.14),
+      rgba(37, 99, 235, 0.06) 30%,
+      transparent 60%
+    );
+}
+
 .theme-light header a[href="#projects"] {
   background-color: transparent !important;
   box-shadow: none !important;
@@ -1293,6 +1427,20 @@ section[id] {
 .theme-light header a[href="#projects"]:hover {
   background-color: transparent !important;
   color: #0891b2 !important;
+}
+
+.theme-light header a[aria-current="page"] {
+  color: #0e7490 !important;
+}
+
+.theme-light header a[aria-current="page"][href="#projects"] {
+  background-color: rgba(34, 211, 238, 0.12) !important;
+  box-shadow: 0 8px 18px rgba(14, 116, 144, 0.12) !important;
+}
+
+.theme-light header a[aria-current="page"][href="#contact"] {
+  border-color: rgba(8, 145, 178, 0.58) !important;
+  background-color: rgba(34, 211, 238, 0.16) !important;
 }
 
 .theme-light #experience .text-cyan-100\/80 {
