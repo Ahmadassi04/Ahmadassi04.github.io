@@ -10,8 +10,6 @@ section[id] {
 }
 
 .animated-background {
-  --cursor-x: 50%;
-  --cursor-y: 50%;
   pointer-events: none;
   background:
     radial-gradient(ellipse at 50% 0%, rgba(14, 165, 233, 0.16), transparent 52%),
@@ -40,7 +38,7 @@ section[id] {
 .animated-background__cursor-glow {
   background:
     radial-gradient(
-      circle at var(--cursor-x) var(--cursor-y),
+      circle at var(--cursor-x, 50%) var(--cursor-y, 50%),
       rgba(34, 211, 238, 0.24),
       rgba(37, 99, 235, 0.14) 18%,
       rgba(14, 165, 233, 0.06) 32%,
@@ -1141,7 +1139,7 @@ section[id] {
 .theme-light .animated-background__cursor-glow {
   background:
     radial-gradient(
-      circle at var(--cursor-x) var(--cursor-y),
+      circle at var(--cursor-x, 50%) var(--cursor-y, 50%),
       rgba(14, 116, 144, 0.16),
       rgba(37, 99, 235, 0.08) 18%,
       rgba(6, 182, 212, 0.05) 34%,
