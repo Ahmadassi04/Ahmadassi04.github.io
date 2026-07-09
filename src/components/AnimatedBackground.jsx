@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 
 export default function AnimatedBackground() {
   const backgroundRef = useRef(null);
-  const pointerPosition = useRef({ x: 50, y: 50 });
+  const pointerPosition = useRef({ x: "50vw", y: "50vh" });
   const frameId = useRef(null);
 
   useEffect(() => {
@@ -13,17 +13,16 @@ export default function AnimatedBackground() {
       return undefined;
     }
 
-    const supportsFinePointer = window.matchMedia("(any-pointer: fine)").matches;
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    if (!supportsFinePointer || prefersReducedMotion) {
+    if (prefersReducedMotion) {
       return undefined;
     }
 
     const updateCursorVariables = () => {
       frameId.current = null;
-      root.style.setProperty("--cursor-x", `${pointerPosition.current.x}%`);
-      root.style.setProperty("--cursor-y", `${pointerPosition.current.y}%`);
+      root.style.setProperty("--cursor-x", pointerPosition.current.x);
+      root.style.setProperty("--cursor-y", pointerPosition.current.y);
     };
 
     const scheduleUpdate = () => {
@@ -35,16 +34,20 @@ export default function AnimatedBackground() {
     };
 
     const handlePointerMove = (event) => {
+      if (event.pointerType === "touch") {
+        return;
+      }
+
       pointerPosition.current = {
-        x: (event.clientX / window.innerWidth) * 100,
-        y: (event.clientY / window.innerHeight) * 100,
+        x: `${event.clientX}px`,
+        y: `${event.clientY}px`,
       };
 
       scheduleUpdate();
     };
 
     const handlePointerLeave = () => {
-      pointerPosition.current = { x: 50, y: 50 };
+      pointerPosition.current = { x: "50vw", y: "50vh" };
       scheduleUpdate();
     };
 
