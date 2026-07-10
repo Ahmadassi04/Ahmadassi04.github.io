@@ -165,6 +165,12 @@ const experience = [
 
 const navItems = ["About", "Education", "Skills", "Projects", "Experience"];
 const sectionIds = ["home", "about", "education", "skills", "projects", "experience", "contact"];
+const accentOptions = ["cyan", "green", "red"];
+const accentLabels = {
+  cyan: "CYAN",
+  green: "GREEN",
+  red: "RED",
+};
 const heroHeadingPrefix = "Hi, I’m ";
 const heroHeadingFirstName = "Ahmad";
 const heroHeadingLastName = "Assi";
@@ -190,6 +196,16 @@ const getInitialTheme = () => {
   return window.matchMedia("(prefers-color-scheme: light)").matches
     ? "light"
     : "dark";
+};
+
+const getInitialAccent = () => {
+  if (typeof window === "undefined") {
+    return "cyan";
+  }
+
+  const savedAccent = window.localStorage.getItem("portfolio-accent");
+
+  return accentOptions.includes(savedAccent) ? savedAccent : "cyan";
 };
 
 function SectionReveal({ id, className, children, amount = 0.15 }) {
@@ -264,12 +280,12 @@ function TypewriterHeroHeading({ className }) {
       <span className="invisible" aria-hidden="true">
         <span className="block">
           {heroHeadingPrefix}
-          <span className="bg-gradient-to-r from-cyan-300 to-blue-500 bg-clip-text text-transparent">
+          <span className="accent-gradient-text">
             {heroHeadingFirstName}
           </span>
         </span>
         <span className="block">
-          <span className="bg-gradient-to-r from-cyan-300 to-blue-500 bg-clip-text text-transparent">
+          <span className="accent-gradient-text">
             {heroHeadingLastName}
           </span>
           {heroHeadingSuffix}
@@ -279,13 +295,13 @@ function TypewriterHeroHeading({ className }) {
       <span className="absolute inset-0" aria-hidden="true">
         <span className="block">
           {visiblePrefix}
-          <span className="bg-gradient-to-r from-cyan-300 to-blue-500 bg-clip-text text-transparent">
+          <span className="accent-gradient-text">
             {visibleFirstName}
           </span>
           {isTypingFirstLine && <span className="typewriter-cursor" />}
         </span>
         <span className="block">
-          <span className="bg-gradient-to-r from-cyan-300 to-blue-500 bg-clip-text text-transparent">
+          <span className="accent-gradient-text">
             {visibleLastName}
           </span>
           {visibleSuffix}
@@ -341,6 +357,7 @@ const handleProjectCardPointerLeave = (event) => {
 export default function Portfolio() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [theme, setTheme] = useState(getInitialTheme);
+  const [accent, setAccent] = useState(getInitialAccent);
   const [activeSection, setActiveSection] = useState("home");
   const [contactForm, setContactForm] = useState({
     name: "",
@@ -359,6 +376,10 @@ export default function Portfolio() {
     document.documentElement.dataset.theme = theme;
     document.documentElement.style.colorScheme = theme;
   }, [theme]);
+
+  useEffect(() => {
+    document.documentElement.dataset.accent = accent;
+  }, [accent]);
 
   useEffect(() => {
     if (!selectedImage) {
@@ -524,6 +545,16 @@ export default function Portfolio() {
     });
   };
 
+  const handleAccentToggle = () => {
+    setAccent((currentAccent) => {
+      const currentIndex = accentOptions.indexOf(currentAccent);
+      const nextAccent = accentOptions[(currentIndex + 1) % accentOptions.length];
+
+      window.localStorage.setItem("portfolio-accent", nextAccent);
+      return nextAccent;
+    });
+  };
+
   return (
     <main
       className={`relative isolate min-h-screen overflow-x-hidden bg-transparent pt-20 text-slate-100 ${
@@ -558,7 +589,7 @@ export default function Portfolio() {
                 >
                   {item}
                   <span
-                    className={`absolute inset-x-3 -bottom-1 h-px rounded-full bg-cyan-300 transition ${
+                    className={`nav-active-underline absolute inset-x-3 -bottom-1 h-px rounded-full transition ${
                       isActive ? "opacity-100" : "opacity-0"
                     }`}
                     aria-hidden="true"
@@ -1107,6 +1138,16 @@ export default function Portfolio() {
       <footer className="border-t border-white/10 px-6 py-8 text-center text-sm text-slate-500">
         © {new Date().getFullYear()} Ahmad Assi. All rights reserved.
       </footer>
+      <button
+        type="button"
+        onClick={handleAccentToggle}
+        className="accent-switcher fixed bottom-5 left-5 z-[90] inline-flex items-center gap-2 rounded-full border px-3.5 py-2 text-xs font-bold tracking-[0.16em] backdrop-blur transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 sm:bottom-6 sm:left-6"
+        aria-label={`Change accent color, current accent is ${accent}`}
+        title={`Accent: ${accentLabels[accent]}`}
+      >
+        <span className="accent-switcher__dot" aria-hidden="true" />
+        {accentLabels[accent]}
+      </button>
       <BackToTopButton />
       </div>
     </main>
