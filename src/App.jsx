@@ -532,6 +532,7 @@ export default function Portfolio() {
     >
       <AnimatedBackground />
 
+      <div className="relative z-10">
       <header className="fixed left-0 right-0 top-0 z-[100] border-b border-white/10 bg-slate-950/75 backdrop-blur-xl">
         <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <a href="#home" className="text-lg font-bold tracking-tight">
@@ -1107,6 +1108,7 @@ export default function Portfolio() {
         © {new Date().getFullYear()} Ahmad Assi. All rights reserved.
       </footer>
       <BackToTopButton />
+      </div>
     </main>
   );
 }

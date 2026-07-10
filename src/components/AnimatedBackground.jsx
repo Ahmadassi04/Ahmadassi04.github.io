@@ -84,7 +84,7 @@ export default function AnimatedBackground() {
   return (
     <div
       ref={backgroundRef}
-      className="animated-background fixed inset-0 -z-10 overflow-hidden"
+      className="animated-background pointer-events-none fixed inset-0 z-0 overflow-hidden"
       aria-hidden="true"
     >
       <div className="animated-background__wash" />
