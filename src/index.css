@@ -17,6 +17,7 @@ section[id] {
   --accent-border: rgba(34, 211, 238, 0.35);
   --accent-text: #67e8f9;
   --accent-text-muted: #a5f3fc;
+  --accent-ring: rgb(34, 211, 238);
   --accent-shadow: rgba(8, 145, 178, 0.18);
 }
 
@@ -28,6 +29,7 @@ section[id] {
   --accent-border: rgba(52, 211, 153, 0.35);
   --accent-text: #6ee7b7;
   --accent-text-muted: #a7f3d0;
+  --accent-ring: rgb(52, 211, 153);
   --accent-shadow: rgba(16, 185, 129, 0.18);
 }
 
@@ -39,6 +41,7 @@ section[id] {
   --accent-border: rgba(248, 113, 113, 0.35);
   --accent-text: #fca5a5;
   --accent-text-muted: #fecaca;
+  --accent-ring: rgb(248, 113, 113);
   --accent-shadow: rgba(248, 113, 113, 0.18);
 }
 
@@ -50,6 +53,7 @@ section[id] {
   --accent-border: rgba(14, 116, 144, 0.3);
   --accent-text: #0e7490;
   --accent-text-muted: #155e75;
+  --accent-ring: rgb(14, 116, 144);
   --accent-shadow: rgba(14, 116, 144, 0.14);
 }
 
@@ -61,6 +65,7 @@ section[id] {
   --accent-border: rgba(5, 150, 105, 0.3);
   --accent-text: #047857;
   --accent-text-muted: #065f46;
+  --accent-ring: rgb(5, 150, 105);
   --accent-shadow: rgba(5, 150, 105, 0.14);
 }
 
@@ -72,6 +77,7 @@ section[id] {
   --accent-border: rgba(220, 38, 38, 0.3);
   --accent-text: #b91c1c;
   --accent-text-muted: #991b1b;
+  --accent-ring: rgb(220, 38, 38);
   --accent-shadow: rgba(220, 38, 38, 0.13);
 }
 
@@ -258,7 +264,7 @@ section[id] {
 }
 
 .accent-switcher:focus-visible {
-  --tw-ring-color: rgb(var(--accent-rgb));
+  --tw-ring-color: var(--accent-ring);
 }
 
 .accent-switcher__dot {
@@ -271,6 +277,16 @@ section[id] {
 
 .nav-active-underline {
   background-color: rgb(var(--accent-rgb));
+}
+
+.accent-focus:focus,
+.accent-focus:focus-visible {
+  --tw-ring-color: var(--accent-ring);
+}
+
+main :is(a, button, input, textarea, select, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent-ring);
+  outline-offset: 3px;
 }
 
 @keyframes typewriter-cursor-blink {

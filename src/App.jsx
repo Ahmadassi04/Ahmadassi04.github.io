@@ -581,7 +581,7 @@ export default function Portfolio() {
                   href={`#${sectionId}`}
                   onClick={() => setActiveSection(sectionId)}
                   aria-current={isActive ? "page" : undefined}
-                  className={`relative rounded-full px-3 py-2 text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-cyan-300 focus:ring-offset-2 focus:ring-offset-slate-950 ${
+                  className={`accent-focus relative rounded-full px-3 py-2 text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 ${
                     isActive
                       ? "bg-cyan-400/10 text-cyan-200 shadow-sm shadow-cyan-950/20"
                       : "text-slate-300 hover:bg-white/5 hover:text-cyan-300"
@@ -605,7 +605,7 @@ export default function Portfolio() {
               onClick={handleThemeToggle}
               aria-label={isLightTheme ? "Switch to dark mode" : "Switch to light mode"}
               title={isLightTheme ? "Switch to dark mode" : "Switch to light mode"}
-              className="theme-toggle inline-flex h-10 w-10 items-center justify-center rounded-full border border-cyan-400/35 bg-white/[0.04] text-cyan-200 transition hover:border-cyan-300 hover:bg-cyan-400/10 focus:outline-none focus:ring-2 focus:ring-cyan-300 focus:ring-offset-2 focus:ring-offset-slate-950"
+              className="accent-focus theme-toggle inline-flex h-10 w-10 items-center justify-center rounded-full border border-cyan-400/35 bg-white/[0.04] text-cyan-200 transition hover:border-cyan-300 hover:bg-cyan-400/10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950"
             >
               {isLightTheme ? (
                 <Moon size={18} aria-hidden="true" />
@@ -618,7 +618,7 @@ export default function Portfolio() {
               href="#contact"
               onClick={() => setActiveSection("contact")}
               aria-current={activeSection === "contact" ? "page" : undefined}
-              className={`rounded-full border px-4 py-2 text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-cyan-300 focus:ring-offset-2 focus:ring-offset-slate-950 ${
+              className={`accent-focus rounded-full border px-4 py-2 text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 ${
                 activeSection === "contact"
                   ? "border-cyan-300 bg-cyan-400/15 text-cyan-100"
                   : "border-cyan-400/40 text-cyan-200 hover:border-cyan-300 hover:bg-cyan-400/10"
@@ -1013,7 +1013,7 @@ export default function Portfolio() {
                     onChange={handleContactChange}
                     required
                     placeholder="Your name"
-                    className="w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-cyan-300/70 focus:bg-white/[0.07]"
+                    className="accent-focus w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-[rgb(var(--accent-rgb))] focus:bg-white/[0.07] focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950"
                   />
                 </div>
 
@@ -1032,7 +1032,7 @@ export default function Portfolio() {
                     onChange={handleContactChange}
                     required
                     placeholder="your.email@example.com"
-                    className="w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-cyan-300/70 focus:bg-white/[0.07]"
+                    className="accent-focus w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-[rgb(var(--accent-rgb))] focus:bg-white/[0.07] focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950"
                   />
                 </div>
 
@@ -1051,7 +1051,7 @@ export default function Portfolio() {
                     required
                     rows="5"
                     placeholder="Write your message here..."
-                    className="w-full resize-none rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-cyan-300/70 focus:bg-white/[0.07]"
+                    className="accent-focus w-full resize-none rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-[rgb(var(--accent-rgb))] focus:bg-white/[0.07] focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950"
                   />
                 </div>
 
@@ -1075,7 +1075,7 @@ export default function Portfolio() {
                 <button
                   type="submit"
                   disabled={isSending}
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-cyan-400 px-6 py-3 font-semibold text-slate-950 transition hover:bg-cyan-300 disabled:cursor-not-allowed disabled:opacity-70"
+                  className="accent-focus inline-flex items-center justify-center gap-2 rounded-full bg-cyan-400 px-6 py-3 font-semibold text-slate-950 transition hover:bg-cyan-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 disabled:cursor-not-allowed disabled:opacity-70"
                 >
                   {isSending ? "Sending..." : "Send Message"}
                   <Send size={18} />
