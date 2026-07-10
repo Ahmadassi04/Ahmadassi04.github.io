@@ -289,6 +289,20 @@ main :is(a, button, input, textarea, select, [tabindex]):focus-visible {
   outline-offset: 3px;
 }
 
+.accent-floating-button {
+  border-color: rgba(var(--accent-rgb), 0.52);
+  background: rgba(2, 6, 23, 0.86);
+  color: var(--accent-text-muted);
+  box-shadow: 0 16px 38px var(--accent-shadow);
+}
+
+.accent-floating-button:hover {
+  border-color: rgba(var(--accent-rgb), 0.76);
+  background: rgb(var(--accent-rgb));
+  color: #020617;
+  box-shadow: 0 18px 44px rgba(var(--accent-rgb), 0.26);
+}
+
 @keyframes typewriter-cursor-blink {
   0%,
   45% {
@@ -1578,6 +1592,20 @@ main :is(a, button, input, textarea, select, [tabindex]):focus-visible {
   background-color: rgba(255, 255, 255, 0.86) !important;
   color: var(--accent-text) !important;
   box-shadow: 0 12px 32px var(--accent-shadow) !important;
+}
+
+.theme-light .accent-floating-button {
+  border-color: rgba(var(--accent-rgb), 0.42) !important;
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  color: var(--accent-text) !important;
+  box-shadow: 0 14px 34px rgba(var(--accent-rgb), 0.18) !important;
+}
+
+.theme-light .accent-floating-button:hover {
+  border-color: rgba(var(--accent-rgb), 0.68) !important;
+  background-color: rgb(var(--accent-rgb)) !important;
+  color: #f8fafc !important;
+  box-shadow: 0 16px 40px rgba(var(--accent-rgb), 0.24) !important;
 }
 
 .theme-light .animated-background__particles--near {
