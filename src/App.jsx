@@ -939,10 +939,10 @@ export default function Portfolio() {
         </div>
       </SectionReveal>
 
-      <SectionReveal id="contact" className="mx-auto max-w-6xl px-6 py-20">
-        <div className="rounded-[2rem] border border-cyan-400/20 bg-gradient-to-br from-cyan-400/10 via-blue-500/10 to-white/[0.04] p-8 md:p-12">
-          <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
-            <div>
+      <SectionReveal id="contact" className="contact-section mx-auto max-w-6xl px-4 py-20 sm:px-6">
+        <div className="contact-card rounded-[2rem] border border-cyan-400/20 bg-gradient-to-br from-cyan-400/10 via-blue-500/10 to-white/[0.04] p-5 sm:p-8 md:p-12">
+          <div className="contact-grid grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+            <div className="min-w-0">
               <p className="mb-3 text-sm font-semibold uppercase tracking-[0.3em] text-cyan-300">
                 Contact
               </p>
@@ -994,9 +994,9 @@ export default function Portfolio() {
 
             <form
               onSubmit={handleContactSubmit}
-              className="rounded-3xl border border-white/10 bg-slate-950/60 p-6 shadow-2xl shadow-cyan-950/30 backdrop-blur"
+              className="contact-form rounded-3xl border border-white/10 bg-slate-950/60 p-4 shadow-2xl shadow-cyan-950/30 backdrop-blur sm:p-6"
             >
-              <div className="grid gap-5">
+              <div className="grid min-w-0 gap-5">
                 <input type="hidden" name="access_key" value={WEB3FORMS_ACCESS_KEY} />
                 <div>
                   <label
@@ -1064,7 +1064,7 @@ export default function Portfolio() {
                   autoComplete="off"
                 />
 
-                <div className="flex justify-center">
+                <div className="contact-captcha flex justify-center">
                   <div
                     className="h-captcha"
                     data-captcha="true"
