@@ -5,8 +5,7 @@ const getParticleCount = () => {
     return 80;
   }
 
-  const isCompact = window.innerWidth < 768;
-  return isCompact ? 42 : 96;
+  return 96;
 };
 
 const createParticle = (width, height, startAbove = false) => ({
@@ -41,15 +40,20 @@ export default function AnimatedBackground() {
     }
 
     const reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const compactScreenQuery = window.matchMedia("(max-width: 768px)");
+    const coarsePointerQuery = window.matchMedia("(pointer: coarse)");
     let width = 0;
     let height = 0;
     let pixelRatio = 1;
     let animationFrame = 0;
+    let isMobileMode = compactScreenQuery.matches || coarsePointerQuery.matches;
+    let pointerListenersActive = false;
 
     const resizeCanvas = () => {
+      isMobileMode = compactScreenQuery.matches || coarsePointerQuery.matches;
       width = window.innerWidth;
       height = window.innerHeight;
-      pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+      pixelRatio = isMobileMode ? 1 : Math.min(window.devicePixelRatio || 1, 2);
 
       canvas.width = Math.floor(width * pixelRatio);
       canvas.height = Math.floor(height * pixelRatio);
@@ -57,6 +61,14 @@ export default function AnimatedBackground() {
       canvas.style.height = `${height}px`;
       context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
 
+      if (isMobileMode) {
+        canvas.style.display = "none";
+        context.clearRect(0, 0, width, height);
+        particlesRef.current = [];
+        return;
+      }
+
+      canvas.style.display = "block";
       particlesRef.current = Array.from({ length: getParticleCount() }, () =>
         createParticle(width, height),
       );
@@ -141,11 +153,19 @@ export default function AnimatedBackground() {
         frameId.current = null;
       }
 
+      if (isMobileMode) {
+        removePointerListeners();
+        context.clearRect(0, 0, width, height);
+        return;
+      }
+
       if (reduceMotionQuery.matches) {
+        removePointerListeners();
         renderStaticParticles();
         return;
       }
 
+      addPointerListeners();
       frameId.current = window.requestAnimationFrame(animateParticles);
     };
 
@@ -173,18 +193,46 @@ export default function AnimatedBackground() {
       mouseRef.current.active = false;
     };
 
+    function addPointerListeners() {
+      if (pointerListenersActive) {
+        return;
+      }
+
+      window.addEventListener("pointermove", handlePointerMove, { passive: true });
+      window.addEventListener("mousemove", handleMouseMove, { passive: true });
+      window.addEventListener("blur", handlePointerLeave);
+      document.documentElement.addEventListener("mouseleave", handlePointerLeave);
+      pointerListenersActive = true;
+    }
+
+    function removePointerListeners() {
+      if (!pointerListenersActive) {
+        return;
+      }
+
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("blur", handlePointerLeave);
+      document.documentElement.removeEventListener("mouseleave", handlePointerLeave);
+      pointerListenersActive = false;
+      mouseRef.current.active = false;
+    }
+
+    const handleEnvironmentChange = () => {
+      resizeCanvas();
+      startAnimation();
+    };
+
     resizeCanvas();
     startAnimation();
 
-    window.addEventListener("resize", resizeCanvas);
-    window.addEventListener("pointermove", handlePointerMove, { passive: true });
-    window.addEventListener("mousemove", handleMouseMove, { passive: true });
-    window.addEventListener("blur", handlePointerLeave);
-    document.documentElement.addEventListener("mouseleave", handlePointerLeave);
+    window.addEventListener("resize", handleEnvironmentChange);
+    compactScreenQuery.addEventListener("change", handleEnvironmentChange);
+    coarsePointerQuery.addEventListener("change", handleEnvironmentChange);
     reduceMotionQuery.addEventListener("change", startAnimation);
 
     const themeObserver = new MutationObserver(() => {
-      if (reduceMotionQuery.matches) {
+      if (!isMobileMode && reduceMotionQuery.matches) {
         renderStaticParticles();
       }
     });
@@ -195,13 +243,12 @@ export default function AnimatedBackground() {
     });
 
     return () => {
-      window.removeEventListener("resize", resizeCanvas);
-      window.removeEventListener("pointermove", handlePointerMove);
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("blur", handlePointerLeave);
-      document.documentElement.removeEventListener("mouseleave", handlePointerLeave);
+      window.removeEventListener("resize", handleEnvironmentChange);
+      compactScreenQuery.removeEventListener("change", handleEnvironmentChange);
+      coarsePointerQuery.removeEventListener("change", handleEnvironmentChange);
       reduceMotionQuery.removeEventListener("change", startAnimation);
       themeObserver.disconnect();
+      removePointerListeners();
 
       if (frameId.current !== null) {
         window.cancelAnimationFrame(frameId.current);
