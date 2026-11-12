@@ -1,3 +1,4 @@
+import claudeCodeLogo from "./assets/claude-code.svg";
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import {
@@ -32,6 +33,16 @@ const skillCategories = [
     ],
   },
   {
+    title: "Backend & Mobile",
+    skills: [
+      { name: "Dart", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/dart/dart-original.svg" },
+      { name: "Flutter", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flutter/flutter-original.svg" },
+      { name: "Django", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/django/django-plain.svg" },
+      { name: "PostgreSQL", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg" },
+      { name: "REST APIs", short: "API" },
+    ],
+  },
+  {
     title: "Web Development",
     skills: [
       { name: "HTML", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg" },
@@ -39,6 +50,7 @@ const skillCategories = [
       { name: "React", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg" },
       { name: "Bootstrap", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bootstrap/bootstrap-original.svg" },
       { name: "Webflow", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/webflow/webflow-original.svg" },
+      { name: "Vite", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitejs/vitejs-original.svg" },
     ],
   },
   {
@@ -46,6 +58,8 @@ const skillCategories = [
     skills: [
       { name: "Git", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original.svg" },
       { name: "GitHub", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg" },
+      { name: "GitHub Actions", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/githubactions/githubactions-original.svg" },
+      { name: "Claude Code", icon: claudeCodeLogo },
       { name: "VS Code", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg" },
       { name: "Google APIs", short: "API" },
     ],
@@ -60,6 +74,8 @@ const skillCategories = [
       { name: "NumPy", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/numpy/numpy-original.svg" },
       { name: "Matplotlib", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/matplotlib/matplotlib-original.svg" },
       { name: "JUnit 5", short: "J5" },
+      { name: "Test-Driven Development (TDD)", short: "TDD" },
+      { name: "Unit & Integration Testing", short: "TEST" },
       { name: "Pytest", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/pytest/pytest-original.svg" },
       { name: "localStorage", short: "LS" },
     ],
@@ -134,18 +150,25 @@ const projects = [
 
 const experience = [
   {
-    role: "Technical Team Core Member",
+    role: "Technical Team Head",
     org: "Google Developer Group on Campus BME",
-    date: "Jan 2026 – Present",
+    date: "Aug 2026 – Present",
     details:
-      "Contributing to internal tech projects, supporting community activities, and serving as Project Lead for the Certificate Generator project.",
+      "Lead the Technical Team, coordinate the planning and development of technical projects, establish priorities, and collaborate with team members on GDGoC BME initiatives.",
   },
   {
-    role: "IT Team Member",
-    org: "TEDxBME",
-    date: "Feb 2025 – Jun 2025",
+    role: "Software Development Intern",
+    org: "GLOBUS SOFTWARE DEVELOPMENT COMPANY SRL",
+    date: "Jul 2026 – Sep 2026",
     details:
-      "Managed and maintained the TEDxBME website using Webflow, updated content, supported functionality, and kept the site aligned with event branding.",
+      "Developed thesis-related backend and mobile functionality using Python, Django, PostgreSQL, REST APIs, Flutter, and Dart. Applied test-driven development, automated testing, code review, technical documentation, and Git/GitHub pull-request workflows.",
+  },
+  {
+    role: "Technical Team Core Member",
+    org: "Google Developer Group on Campus BME",
+    date: "Jan 2026 – Jul 2026",
+    details:
+      "Contributed to community technical projects and served as Project Lead for the Certificate Generator, coordinating development tasks, timelines, and team progress.",
   },
   {
     role: "Technical Support",
@@ -153,6 +176,13 @@ const experience = [
     date: "Oct 2025",
     details:
       "Provided participant onboarding, troubleshooting, and presenter support for a two-day lecture and hackathon program.",
+  },
+  {
+    role: "IT Team Member",
+    org: "TEDxBME",
+    date: "Feb 2025 – Jun 2025",
+    details:
+      "Managed and maintained the TEDxBME website using Webflow, updated content, supported functionality, and kept the site aligned with event branding.",
   },
   {
     role: "Warehouse Associate",
